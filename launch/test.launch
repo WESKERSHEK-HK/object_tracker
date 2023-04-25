@@ -6,7 +6,7 @@
   <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
     <arg name="camera_name" value="camera" />
     <arg name="image_topic" value="/camera/color/image_raw" />
-    <arg name="camera_info_url" value="file://$(find your_camera_package)/config/camera_info.yaml" />
+   
     <arg name="tag_family" value="tag36h11" />
     <arg name="tag_size" value="0.16" />
   </include>
