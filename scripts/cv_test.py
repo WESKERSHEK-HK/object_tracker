@@ -31,9 +31,8 @@ def tag_callback(data):
     if data.detections and depth_data is not None and color_image is not None:
         tag_detected = True
         tag = data.detections[0] # Assuming only one tag is being tracked
-        print(tag)
-        tag_x = tag.pose.pose.position.x
-        tag_y = tag.pose.pose.position.y
+        tag_x = tag.pose.pose.pose.position.x
+        tag_y = tag.pose.pose.pose.position.y
 
         # Get depth at the tag's position
         u = int(tag_x * depth_data.shape[1])
