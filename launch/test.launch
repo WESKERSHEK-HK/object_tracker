@@ -2,7 +2,7 @@
     <!-- Launch RealSense Node -->
     <include file="$(find realsense2_camera)/launch/rs_camera.launch" />
     <!-- Load the AprilTag detector parameters -->
-    <rosparam command="load" file="$(find object_tracker)/config/apriltag_settings.yaml" />
+    <!--rosparam command="load" file="$(find object_tracker)/config/apriltag_settings.yaml" /-->
     <!-- AprilTag detector node -->
     <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
         <arg name="camera_name" value="/camera/color" />
