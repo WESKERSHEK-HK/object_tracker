@@ -15,15 +15,18 @@ bridge = CvBridge()
 def depth_callback(data):
     global depth_data
     depth_data = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
+    rospy.loginfo("Depth data received")
 
 def color_callback(data):
     global color_image
     color_image = bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
+    rospy.loginfo("Color data received")
 
 def tag_callback(data):
     global depth_data, color_image
 
     if data.detections and depth_data is not None and color_image is not None:
+        rospy.loginfo("Tag detected")
         tag = data.detections[0] # Assuming only one tag is being tracked
         tag_x = tag.pose.pose.position.x
         tag_y = tag.pose.pose.position.y
@@ -41,6 +44,7 @@ def tag_callback(data):
         dog_position.point.z = depth
 
         position_pub.publish(dog_position)
+        rospy.loginfo("Published dog position")
 
         # Draw XYZ coordinates on the image
         img = color_image.copy()
@@ -65,4 +69,5 @@ if __name__ == '__main__':
 
     position_pub = rospy.Publisher("/dog/position", PointStamped, queue_size=1)
 
+    rospy.loginfo("Dog position tracker node initialized")
     rospy.spin()
