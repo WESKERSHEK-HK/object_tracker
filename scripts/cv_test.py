@@ -6,7 +6,7 @@ import cv2
 from cv_bridge import CvBridge
 from apriltag_ros.msg import AprilTagDetectionArray
 from sensor_msgs.msg import Image
-from geometry_msgs.msg import PointStamped
+from geometry_msgs.msg import Point
 import threading
 
 depth_data = None
@@ -40,11 +40,11 @@ def tag_callback(data):
 
         depth = depth_data[v, u] / 1000.0
 
-        dog_position = PointStamped()
+        dog_position = Point()
         dog_position.header.stamp = rospy.Time.now()
-        dog_position.point.x = tag_x
-        dog_position.point.y = tag_y
-        dog_position.point.z = depth
+        dog_position.position.x = tag_x
+        dog_position.position.y = tag_y
+        dog_position.position.z = depth
 
         position_pub.publish(dog_position)
     else:
@@ -59,16 +59,7 @@ def show_image():
 
             # Resize the image
             img = cv2.resize(img, None, fx=resize_factor, fy=resize_factor, interpolation=cv2.INTER_AREA)
-
-            if tag_detected:
-                # Draw bounding box around the detected tag
-                tag = data.detections[0]
-                x_min = int(tag.x_range[0] * resize_factor)
-                x_max = int(tag.x_range[1] * resize_factor)
-                y_min = int(tag.y_range[0] * resize_factor)
-                y_max = int(tag.y_range[1] * resize_factor)
-
-                cv2.rectangle(img, (x_min, y_min), (x_max, y_max), bbox_color, bbox_thickness)
+]
 
             cv2.imshow("Tracking", img)
             cv2.waitKey(1)
@@ -80,13 +71,13 @@ if __name__ == '__main__':
     rospy.Subscriber("/camera/depth/image_rect_raw", Image, depth_callback)
     rospy.Subscriber("/camera/color/image_raw", Image, color_callback)
 
-    position_pub = rospy.Publisher("/dog/position", PointStamped, queue_size=1)
+    position_pub = rospy.Publisher("/dog/position", Point, queue_size=1)
 
     rospy.loginfo("Dog position tracker node initialized")
 
     # Start image display thread
-    image_display_thread = threading.Thread(target=show_image)
-    image_display_thread.start()
+    #image_display_thread = threading.Thread(target=show_image)
+    #image_display_thread.start()
 
     rospy.spin()
 
