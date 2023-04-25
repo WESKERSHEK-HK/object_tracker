@@ -14,6 +14,8 @@ color_image = None
 bridge = CvBridge()
 tag_detected = False
 resize_factor = 0.5
+bbox_color = (0, 255, 0)  # Green
+bbox_thickness = 2
 
 def depth_callback(data):
     global depth_data
@@ -56,16 +58,17 @@ def show_image():
             img = color_image.copy()
 
             # Resize the image
-            img = cv2.resize(img, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA)
+            img = cv2.resize(img, None, fx=resize_factor, fy=resize_factor, interpolation=cv2.INTER_AREA)
 
             if tag_detected:
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                text_color = (0, 255, 0)
-                text_scale = 0.5
-                text_thickness = 1
+                # Draw bounding box around the detected tag
+                tag = data.detections[0]
+                x_min = int(tag.x_range[0] * resize_factor)
+                x_max = int(tag.x_range[1] * resize_factor)
+                y_min = int(tag.y_range[0] * resize_factor)
+                y_max = int(tag.y_range[1] * resize_factor)
 
-                text = "Tag detected"
-                cv2.putText(img, text, (20, 40), font, text_scale, text_color, text_thickness)
+                cv2.rectangle(img, (x_min, y_min), (x_max, y_max), bbox_color, bbox_thickness)
 
             cv2.imshow("Tracking", img)
             cv2.waitKey(1)
