@@ -41,7 +41,6 @@ def tag_callback(data):
         depth = depth_data[v, u] / 1000.0
 
         dog_position = Point()
-        dog_position.header.stamp = rospy.Time.now()
         dog_position.position.x = tag_x
         dog_position.position.y = tag_y
         dog_position.position.z = depth
