@@ -6,10 +6,10 @@
   <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
     <arg name="camera_name" value="camera" />
     <arg name="image_topic" value="/camera/color/image_raw" />
-   
-    <arg name="tag_family" value="tag36h11" />
-    <arg name="tag_size" value="0.16" />
   </include>
+
+    <!-- Load the AprilTag detector parameters -->
+    <node name="apriltag_config_loader" pkg="rosparam" type="rosparam" args="load $(find object_tracker)/config/apriltag_settings.yaml" />
 
     <!-- Launch Object Tracker Node -->
     <node name="dog_position_tracker" pkg="object_tracker" type="cv_test.py" output="screen" />

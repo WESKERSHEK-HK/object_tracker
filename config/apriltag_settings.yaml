@@ -1,13 +1,6 @@
 # apriltag_settings.yaml
-
-# Tag family to use (e.g., tag36h11, tag16h5)
-tag_family: 'tag36h11'
-
-# Camera info
-camera_name: 'camera'
-image_topic: '/camera/color/image_raw'
-
-# Detector parameters
-standalone_tags:
-  - id: 0
-    size: 0.16
+apriltag_ros:
+  standalone_tags:
+    - id: 0
+      size: 0.16
+  tag_family: 'tag36h11'
