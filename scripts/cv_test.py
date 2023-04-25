@@ -56,7 +56,7 @@ def show_image():
             img = color_image.copy()
 
             # Resize the image
-            img = cv2.resize(img, None, fx=640, fy=360, interpolation=cv2.INTER_AREA)
+            img = cv2.resize(img, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA)
 
             if tag_detected:
                 font = cv2.FONT_HERSHEY_SIMPLEX
