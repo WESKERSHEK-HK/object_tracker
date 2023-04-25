@@ -2,7 +2,10 @@
     <!-- Launch RealSense Node -->
     <include file="$(find realsense2_camera)/launch/rs_camera.launch" />
     <!-- AprilTag detector node -->
-    
+    <node name="apriltag_detector" pkg="apriltag_ros" type="continuous_node" output="screen">
+        <remap from="image_rect" to="/camera/color/image_raw"/>
+        <rosparam command="load" file="$(find object_tracker)/config/apriltag_settings.yaml"/>
+    </node>
 In this launch file, replace your_camera_package and your_camera_launch_file.launch with the appropriate package and laun
     <!-- Launch Object Tracker Node -->
     <node name="dog_position_tracker" pkg="object_tracker" type="cv_test.py" output="screen" />
