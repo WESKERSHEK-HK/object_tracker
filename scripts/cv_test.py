@@ -16,6 +16,7 @@ tag_detected = False
 resize_factor = 0.5
 bbox_color = (0, 255, 0)  # Green
 bbox_thickness = 2
+tag_detect_fail_count = 0
 
 def depth_callback(data):
     global depth_data
@@ -26,7 +27,7 @@ def color_callback(data):
     color_image = bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
 
 def tag_callback(data):
-    global depth_data, color_image, tag_detected
+    global depth_data, color_image, tag_detected, tag_detect_fail_count
 
     if data.detections and depth_data is not None and color_image is not None:
         tag_detected = True
@@ -48,6 +49,15 @@ def tag_callback(data):
         position_pub.publish(dog_position)
     else:
         tag_detected = False
+        tag_detect_fail_count += 1
+        if tag_detect_fail_count >= 10:
+            dog_position = Point()
+            dog_position.x = 50
+            dog_position.y = 50
+            dog_position.z = 50
+            position_pub.publish(dog_position)
+            tag_detect_fail_count = 0
+
 
 def show_image():
     global color_image, tag_detected
