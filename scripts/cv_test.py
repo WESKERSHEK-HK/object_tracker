@@ -58,7 +58,7 @@ def show_image():
             img = color_image.copy()
 
             # Resize the image
-            img = cv2.resize(img, None, fx=resize_factor, fy=resize_factor, interpolation=cv2.INTER_AREA)]
+            img = cv2.resize(img, None, fx=resize_factor, fy=resize_factor, interpolation=cv2.INTER_AREA)
 
             cv2.imshow("Tracking", img)
             cv2.waitKey(1)
