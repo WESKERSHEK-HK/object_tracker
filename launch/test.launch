@@ -9,7 +9,7 @@
   </include>
 
     <!-- Load the AprilTag detector parameters -->
-    <node name="apriltag_config_loader" pkg="rosparam" type="rosparam" args="load $(find object_tracker)/config/apriltag_settings.yaml" />
+    <node name="apriltag_config_loader" pkg="rospy_tutorials" type="rosparam" args="load $(find object_tracker)/config/apriltag_settings.yaml" />
 
     <!-- Launch Object Tracker Node -->
     <node name="dog_position_tracker" pkg="object_tracker" type="cv_test.py" output="screen" />
