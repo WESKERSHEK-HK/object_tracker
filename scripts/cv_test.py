@@ -50,7 +50,7 @@ def tag_callback(data):
     else:
         tag_detected = False
         tag_detect_fail_count += 1
-        if tag_detect_fail_count >= 10:
+        if tag_detect_fail_count >= 100:
             dog_position = Point()
             dog_position.x = 50
             dog_position.y = 50
