@@ -13,22 +13,20 @@ depth_data = None
 color_image = None
 bridge = CvBridge()
 tag_detected = False
+resize_factor = 0.5
 
 def depth_callback(data):
     global depth_data
     depth_data = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
-    rospy.loginfo("Depth data received")
 
 def color_callback(data):
     global color_image
     color_image = bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
-    rospy.loginfo("Color data received")
 
 def tag_callback(data):
     global depth_data, color_image, tag_detected
 
     if data.detections and depth_data is not None and color_image is not None:
-        rospy.loginfo("Tag detected")
         tag_detected = True
         tag = data.detections[0] # Assuming only one tag is being tracked
         tag_x = tag.pose.pose.position.x
@@ -47,7 +45,6 @@ def tag_callback(data):
         dog_position.point.z = depth
 
         position_pub.publish(dog_position)
-        rospy.loginfo("Published dog position")
     else:
         tag_detected = False
 
@@ -57,6 +54,9 @@ def show_image():
     while not rospy.is_shutdown():
         if color_image is not None:
             img = color_image.copy()
+
+            # Resize the image
+            img = cv2.resize(img, None, fx=640, fy=360, interpolation=cv2.INTER_AREA)
 
             if tag_detected:
                 font = cv2.FONT_HERSHEY_SIMPLEX
