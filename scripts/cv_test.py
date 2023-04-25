@@ -12,22 +12,24 @@ import threading
 depth_data = None
 color_image = None
 bridge = CvBridge()
+tag_detected = False
 
 def depth_callback(data):
     global depth_data
     depth_data = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
-    #rospy.loginfo("Depth data received")
+    rospy.loginfo("Depth data received")
 
 def color_callback(data):
     global color_image
     color_image = bridge.imgmsg_to_cv2(data, desired_encoding='bgr8')
-    #rospy.loginfo("Color data received")
+    rospy.loginfo("Color data received")
 
 def tag_callback(data):
-    global depth_data, color_image
+    global depth_data, color_image, tag_detected
 
     if data.detections and depth_data is not None and color_image is not None:
-        #rospy.loginfo("Tag detected")
+        rospy.loginfo("Tag detected")
+        tag_detected = True
         tag = data.detections[0] # Assuming only one tag is being tracked
         tag_x = tag.pose.pose.position.x
         tag_y = tag.pose.pose.position.y
@@ -45,24 +47,28 @@ def tag_callback(data):
         dog_position.point.z = depth
 
         position_pub.publish(dog_position)
-        #rospy.loginfo("Published dog position")
+        rospy.loginfo("Published dog position")
+    else:
+        tag_detected = False
 
-        # Draw XYZ coordinates on the image
-        img = color_image.copy()
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        text_color = (0, 255, 0)
-        text_scale = 0.5
-        text_thickness = 1
+def show_image():
+    global color_image, tag_detected
 
-        text = "X: {:.3f} Y: {:.3f} Z: {:.3f}".format(tag_x, tag_y, depth)
-        cv2.putText(img, text, (u, v), font, text_scale, text_color, text_thickness)
-
-        # Show the image
-        cv2.imshow("Tracking", img)
-
-def handle_gui_events():
     while not rospy.is_shutdown():
-        cv2.waitKey(1)
+        if color_image is not None:
+            img = color_image.copy()
+
+            if tag_detected:
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                text_color = (0, 255, 0)
+                text_scale = 0.5
+                text_thickness = 1
+
+                text = "Tag detected"
+                cv2.putText(img, text, (20, 40), font, text_scale, text_color, text_thickness)
+
+            cv2.imshow("Tracking", img)
+            cv2.waitKey(1)
 
 if __name__ == '__main__':
     rospy.init_node('dog_position_tracker', anonymous=True)
@@ -75,9 +81,9 @@ if __name__ == '__main__':
 
     rospy.loginfo("Dog position tracker node initialized")
 
-    # Start GUI event handling thread
-    gui_thread = threading.Thread(target=handle_gui_events)
-    gui_thread.start()
+    # Start image display thread
+    image_display_thread = threading.Thread(target=show_image)
+    image_display_thread.start()
 
     rospy.spin()
 
