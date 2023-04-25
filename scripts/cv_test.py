@@ -41,9 +41,9 @@ def tag_callback(data):
         depth = depth_data[v, u] / 1000.0
 
         dog_position = Point()
-        dog_position.position.x = tag_x
-        dog_position.position.y = tag_y
-        dog_position.position.z = depth
+        dog_position.x = tag_x
+        dog_position.y = tag_y
+        dog_position.z = depth
 
         position_pub.publish(dog_position)
     else:
